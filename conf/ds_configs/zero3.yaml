@@ -1,7 +1,7 @@
 fp16: 
-  enabled: false
-bf16: 
   enabled: true
+bf16: 
+  enabled: false
 zero_optimization: 
   stage: 3
   offload_optimizer:
@@ -18,5 +18,5 @@ zero_optimization:
   stage3_max_live_parameters: 1e9
   stage3_max_reuse_distance: 1e9
 steps_per_print: 2000
-train_micro_batch_size_per_gpu: 16
+train_micro_batch_size_per_gpu: 4
 wall_clock_breakdown: false

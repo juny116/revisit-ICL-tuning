@@ -1,6 +1,6 @@
 benchmark: huggingface
-task: rotten_tomatoes
-num_labels: 2
+task: ag_news
+num_labels: 4
 sentence1_key: text
 sentence2_key: null
 label_key: label

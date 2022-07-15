@@ -1,5 +1,5 @@
-benchmark: huggingface
-task: rotten_tomatoes
+benchmark: tweet_eval
+task: offensive
 num_labels: 2
 sentence1_key: text
 sentence2_key: null

@@ -1,6 +1,6 @@
 benchmark: huggingface
-task: rotten_tomatoes
-num_labels: 2
+task: trec
+num_labels: 6
 sentence1_key: text
 sentence2_key: null
-label_key: label
+label_key: label-coarse
