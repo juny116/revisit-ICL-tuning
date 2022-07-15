@@ -1,0 +1,3 @@
+name: gpt2-xl
+model_name_or_path: gpt2-xl
+hidden_size: 1600

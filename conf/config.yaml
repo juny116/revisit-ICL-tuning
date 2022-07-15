@@ -1,0 +1,18 @@
+seed: 42
+padding: true
+max_length: null
+learning_rate: 1e-5
+weight_decay: 0
+epochs: 10
+tag: test
+
+output_path: /data/juny116/outputs/${models.name}/${datasets.task}/${tag}
+save_path: /data/juny116/outputs/${models.name}/${datasets.task}/${tag}
+hydra:
+  run:
+    dir: ./outputs/${models.name}/${datasets.task}/${tag}
+defaults:
+  - models: gpt-j
+  - datasets: sst2
+  - ds_configs: zero3
+  - _self_

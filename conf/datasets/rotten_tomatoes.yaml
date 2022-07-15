@@ -1,0 +1,6 @@
+benchmark: glue
+task: rotten_tomatoes
+num_labels: 2
+sentence1_key: text
+sentence2_key: null
+label_key: label
