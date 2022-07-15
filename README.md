@@ -11,4 +11,4 @@
 ## How to Run (example)
 See details about config in conf directory
 
-<code> deepspeed --include localhost:0,1,2,3 --no_local_rank distributed_main.py ds_configs=zero3 datasets=sst2 models=gpt-j </code>
+<code> deepspeed --include localhost:0,1,2,3 --no_local_rank distributed_main.py ds_configs=zero3_gpu datasets=sst2 models=gpt-j </code>
