@@ -1,6 +1,7 @@
 import logging
 import os
 import random
+from sqlite3 import adapt
 import time
 import json
 
@@ -73,7 +74,10 @@ def main(config: DictConfig) -> None:
     # download the dataset.
     if config['datasets']['benchmark'] is not None:
         # Downloading and loading a dataset from the hub.
-        raw_datasets = load_dataset(config['datasets']['benchmark'], config['datasets']['task'])
+        if config['datasets']['benchmark'] == 'huggingface':
+            raw_datasets = load_dataset(config['datasets']['task'])
+        else:
+            raw_datasets = load_dataset(config['datasets']['benchmark'], config['datasets']['task'])
     else:
         # Loading the dataset from local csv or json file.
         data_files = {}
@@ -94,16 +98,25 @@ def main(config: DictConfig) -> None:
         tokenizer.pad_token = tokenizer.unk_token
     model = ClassificationModel(config["models"], config['datasets']['num_labels'])
 
+    if config['models']['adapter_size']:
+        for n, p in model.named_parameters():
+            if 'adapter' in n:
+                p.requires_grad = True
+            elif 'classifier' in n:
+                p.requires_grad = True
+            else:
+                p.requires_grad = False
+
     # Set optimizer / you can also use deepspeed config to create optimizer use at your convenience
     # Split weights in two groups, one with weight decay and the other not.
     no_decay = ["bias", "LayerNorm.weight"]
     optimizer_grouped_parameters = [
         {
-            "params": [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+            "params": [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay) and p.requires_grad],
             "weight_decay": config['weight_decay'],
         },
         {
-            "params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)],
+            "params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay) and p.requires_grad],
             "weight_decay": 0.0,
         },
     ]
@@ -138,7 +151,7 @@ def main(config: DictConfig) -> None:
         torch.distributed.barrier()
 
     train_dataset = processed_datasets["train"]
-    test_dataset = processed_datasets["validation"]
+    test_dataset = processed_datasets[config['datasets']['test_key']]
     batch_size = ds_config['train_micro_batch_size_per_gpu']
 
     # Evaluate! 
@@ -176,13 +189,16 @@ def main(config: DictConfig) -> None:
             if local_rank == 0:
                 progressbar.update(1)
 
+        if local_rank == 0:
+            progressbar.close()
         result = metric.compute()
         if local_rank == 0:
             logger.info(f"Epoch {epoch}: Train accuracy {result['accuracy'] * 100}")
 
         logger.info(f"Epoch {epoch}: START Evaluation")
         model_engine.module.eval()
-        progressbar = tqdm(range(len(test_dataloader)))
+        if local_rank == 0:
+            progressbar = tqdm(range(len(test_dataloader)))
         for step, batch in enumerate(test_dataloader):
             inputs = tokenizer(batch['inputs'], padding=config['padding'], max_length=config['max_length'], return_tensors='pt').to(device=local_rank)
             inputs['labels'] = batch['labels'].to(device=local_rank)
@@ -198,8 +214,12 @@ def main(config: DictConfig) -> None:
         if local_rank == 0:
             logger.info(f"Epoch {epoch}: Evaluation accuracy {result['accuracy'] * 100}")
         #save checkpoint
-        model_engine.save_checkpoint(config['save_path'], epoch)
-   
+        # model_engine.save_checkpoint(config['save_path'], epoch)
+        # if local_rank == 0:
+        #     temp = [9.11]
+        # else:
+        #     temp = [None]
+        # torch.distributed.broadcast_object_list(temp, 0)
     end_time = time.time()
     logger.info(f'Total runtime : {end_time - start_time} sec.')
                 

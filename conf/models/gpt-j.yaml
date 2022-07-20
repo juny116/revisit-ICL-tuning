@@ -1,3 +1,4 @@
 name: gpt-j
 model_name_or_path: EleutherAI/gpt-j-6B
 hidden_size: 4096
+adapter_size: null

@@ -1,5 +1,5 @@
 fp16: 
-  enabled: false
+  enabled: true
 bf16: 
   enabled: false
 zero_optimization: 

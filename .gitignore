@@ -1,5 +1,6 @@
 # CUSTOM
 outputs
+transformers
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

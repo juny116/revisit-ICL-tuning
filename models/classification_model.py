@@ -3,7 +3,7 @@ from typing import Tuple
 
 import torch
 
-from transformers import AutoModel
+from transformers import AutoModel, AutoConfig
 
 
 class ClassificationModel(torch.nn.Module):
@@ -11,7 +11,8 @@ class ClassificationModel(torch.nn.Module):
         super().__init__()
 
         # Main model
-        self.transformer = AutoModel.from_pretrained(config['model_name_or_path'])
+        transformers_config = AutoConfig.from_pretrained(config['model_name_or_path'], adapter_size=config['adapter_size'])
+        self.transformer = AutoModel.from_pretrained(config['model_name_or_path'], config=transformers_config)
         self.hidden_size = config['hidden_size']
         self.num_labels = num_labels
 
@@ -61,7 +62,7 @@ class ClassificationModel(torch.nn.Module):
 
         loss_fct = torch.nn.CrossEntropyLoss()
         loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
-                
+
         predictions = torch.argmax(logits, dim=1).tolist()
 
         return loss, predictions

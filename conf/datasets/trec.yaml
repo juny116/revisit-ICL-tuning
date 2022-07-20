@@ -4,3 +4,4 @@ num_labels: 6
 sentence1_key: text
 sentence2_key: null
 label_key: label-coarse
+test_key: test

@@ -4,3 +4,4 @@ num_labels: 2
 sentence1_key: sentence
 sentence2_key: null
 label_key: label
+test_key: validation

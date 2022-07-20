@@ -1,6 +1,7 @@
 benchmark: tweet_eval
 task: emotion
-num_labels: 2
+num_labels: 4
 sentence1_key: text
 sentence2_key: null
 label_key: label
+test_key: test

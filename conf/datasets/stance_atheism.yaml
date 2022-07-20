@@ -1,6 +1,7 @@
 benchmark: tweet_eval
 task: stance_atheism
-num_labels: 2
+num_labels: 3
 sentence1_key: text
 sentence2_key: null
 label_key: label
+test_key: test
