@@ -99,6 +99,7 @@ class GPTNeoXConfig(PretrainedConfig):
         bos_token_id=0,
         eos_token_id=2,
         tie_word_embeddings=False,
+        adapter_size=None,
         **kwargs
     ):
         super().__init__(bos_token_id=bos_token_id, eos_token_id=eos_token_id, **kwargs)
@@ -115,3 +116,5 @@ class GPTNeoXConfig(PretrainedConfig):
         self.layer_norm_eps = layer_norm_eps
         self.use_cache = use_cache
         self.tie_word_embeddings = tie_word_embeddings
+
+        self.adapter_size = adapter_size

@@ -1,0 +1,7 @@
+benchmark: glue
+task: wnli
+num_labels: 2
+sentence1_key: sentence1
+sentence2_key: sentence2
+label_key: label
+test_key: validation

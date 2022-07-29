@@ -1,0 +1,7 @@
+benchmark: super_glue
+task: cb
+num_labels: 3
+sentence1_key: premise
+sentence2_key: hypothesis
+label_key: label
+test_key: validation

@@ -1,3 +1,4 @@
 name: gpt-neox
 model_name_or_path: EleutherAI/gpt-neox-20b
 hidden_size: 6144
+adapter_size: null

@@ -1,0 +1,7 @@
+benchmark: super_glue
+task: boolq
+num_labels: 2
+sentence1_key: question
+sentence2_key: passage
+label_key: label
+test_key: validation

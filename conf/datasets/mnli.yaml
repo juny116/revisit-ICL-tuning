@@ -1,0 +1,7 @@
+benchmark: glue
+task: mnli
+num_labels: 3
+sentence1_key: premise
+sentence2_key: hypothesis
+label_key: label
+test_key: validation_matched

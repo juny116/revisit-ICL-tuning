@@ -1,0 +1,7 @@
+benchmark: huggingface
+task: banking77
+num_labels: 77
+sentence1_key: text
+sentence2_key: null
+label_key: label
+test_key: test

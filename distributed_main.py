@@ -122,6 +122,11 @@ def main(config: DictConfig) -> None:
     ]
     optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=config['learning_rate'])
 
+    # if local_rank == 0:
+    #     num_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    #     num_total_params = sum(p.numel() for p in model.parameters())
+    #     logger.info(f'trainable params {num_trainable_params} / total params {num_total_params} = ratio {100 * num_trainable_params/num_total_params} ')
+
     model_engine, optimizer, _, _ = deepspeed.initialize(model=model, optimizer=optimizer, config_params=ds_config)
     model_loading_end = time.time()
     logger.info(f'Total time for loading model : {model_loading_end - model_loading_start} sec.')

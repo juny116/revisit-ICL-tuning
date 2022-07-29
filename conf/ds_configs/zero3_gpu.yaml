@@ -1,5 +1,7 @@
 fp16: 
   enabled: true
+  hysteresis: 5
+  initial_scale_power: 14
 bf16: 
   enabled: false
 zero_optimization: 

@@ -33,6 +33,7 @@ from ...modeling_utils import PreTrainedModel
 from ...utils import logging
 from .configuration_gpt_neox import GPTNeoXConfig
 
+from transformers.models.adapter import Adapter
 
 logger = logging.get_logger(__name__)
 
@@ -300,10 +301,15 @@ class GPTNeoXMLP(nn.Module):
 class GPTNeoXLayer(nn.Module):
     def __init__(self, config):
         super().__init__()
+        hidden_size = config.hidden_size
         self.input_layernorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
         self.post_attention_layernorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
         self.attention = GPTNeoXAttention(config)
         self.mlp = GPTNeoXMLP(config)
+
+        if config.adapter_size:
+            self.adapter1 = Adapter(hidden_size, config.adapter_size, 'relu')
+            self.adapter2 = Adapter(hidden_size, config.adapter_size, 'relu')
 
     def forward(
         self,
@@ -327,7 +333,18 @@ class GPTNeoXLayer(nn.Module):
         attn_output = attention_layer_outputs[0]  # output_attn: a, present, (attentions)
         outputs = attention_layer_outputs[1:]
 
+        #! HS  
+        if hasattr(self, 'adapter1'):
+            attn_output = self.adapter1(attn_output)
+        #! HS  
+
         mlp_output = self.mlp(self.post_attention_layernorm(hidden_states))
+
+                #! HS  
+        if hasattr(self, 'adapter2'):
+            mlp_output = self.adapter2(mlp_output)
+        #! HS  
+        
         hidden_states = mlp_output + attn_output + residual
 
         if use_cache:
